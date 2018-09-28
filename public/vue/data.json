@@ -1,0 +1,7 @@
+{
+	totalCount: 10000,
+	page: 1,
+	pageSize:100,
+    key:["DealerID","DealerNo","DealerCode","DealerOwnerID","DealerNameCn","DealerNameEn","DealerShortNameCn","DealerShortNameEn","FormatID","FormatCodeID","Format","POCCDate","OpeningDate","SRBusinessHoursWorkday","SCBusinessHoursWorkday","SRBusinessHoursSat","SCBusinessHoursSat","SRBusinessHoursSun","SCBusinessHoursSun","StreetMapPath","OutletInteriorPhotoPath","OutletExteriorPhotoPath","ProvinceID","CityID","ZipCode","OperatingAddressCn","OperatingAddressEn","FaxCountryNo","FaxAreaNo","FaxNo","PhoneCountryNo","PhoneAreaNo","PhoneNo","SupportPhoneCountryNo","SupportPhoneAreaNo","SupportPhoneNo","Email","HomePage","InputDate","Status","Version","DealerGroupID","LeadingGSSN"],
+	data:[[]]
+}

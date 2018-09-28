@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>vue 排序</title>
+    <!--<script src="static/js/jquery.min.js"></script>-->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/vue/2.1.3/vue.js"></script>
+    <!--<script src="static/js/vue.js"></script>-->
+</head>
+<style>
+    a{display: inline-block;background-color: blue;width: 10px;height: 10px;margin-left: 5px;}
+</style>
+<body>
+<!--防止模板文件被渲染 v-cloak -->
+<div id="app" v-cloak>
+    <v-table :data="data" :columns="columns"></v-table>
+    <!--<button>添加数据</button>-->
+</div>
+<script>
+//表格组件的所有内容（表头和行数据）由两个prop构成：columns 和data。两者都是数组，columns用来描述每列的信息，并渲染在表头<thead>里面，可以指定某一列是否需要排序；data是每一行的数据，由columns决定每一行里各列的顺序。
+
+//为了让排序后的columns和data不影响原始数据，我们需要给v-table组件的data选项添加两个对应的数据。
+
+//columns的每一项都是一个对象，对象中有三个字段，分别是title、key、sortable。其中title和key字段是必填的，title用来标识这列的表头标题，key是对应的data中列内容的字段名。sortable是选填字段，如果值为true，说明该列需要排序。
+
+//v-table组件目前的prop：columns和data的数据已经从父级获取到，但是v-table不直接操作它们，而是使用data选项的currentColumns和currentData。所以在v-table初始化时，需要把columns和data赋值给currentColumns和currentData，并且在mounted钩子函数内调用：
+
+//在上面的业务代码中，我们用到了map()方法，这是javascript数组中的一个方法，根据传入的函数重新构造一个新数组。排序分为升序(asc)和降序(desc)两种，而且同时只能对一列数据进行排序。为了标识当前列的排序状态，在map列添加数据时，默认给每列都添加一个_sortType字段，赋值为normal，表示默认的排序，也就是不排序。在排序后，currentData每项的顺序都有可能发生变化，所以给currentColumns和currentData的每个数据都添加_index字段，代表当前数据在原始数据中的索引。
+
+//上面的h就是createElement，只是换了一个别名而已。表格主体trs是一个二维数组，数据由currentColumns和currentData 组成，然后先遍历所有的行，在每一行内再遍历各列，最终组合出主体内容节点trs。表头的节点ths要相对复杂点，因为加了排序的功能。
+
+//如果col.sortable没有定义 ，或者值为false，就直接把col.title渲染出来，否则除了渲染title，还加了两个<a>元素来实现升序和降序的操作。接下来，我们在v-table的methods选项里再添加两个方法（升序 / 降序）
+
+
+
+    Vue.component('vTable',{
+//        简而言之声明变量接收传值
+        props:{
+            columns:{
+                type:Array,
+                default:[]
+            },
+            data:{
+                type:Array,
+                default:[]
+            }
+        },
+//        data为声明数据
+        data:function () {
+          return {
+              currentColumns:[],
+              currentData:[]
+          }
+        },
+        methods:{
+            makeColumns:function(){
+//                        col 为必须当前元素的值，index 为可选当前的索引值
+//                注意： map() 不会对空数组进行检测。
+//                注意： map() 不会改变原始数组。
+                        this.currentColumns = this.columns.map(function(col, index){
+                        // 添加一个字段标识当前列排序的状态
+                        col._sortType = 'normal';
+                        // 添加一个字段标识当前列在数组中的索引
+                        col._index = index;
+                        return col; })
+                    },
+            makeData:function () {
+                        this.currentData = this.data.map(function(row, index){
+                            // 添加一个字段标识当前行在数组中的索引
+                            row._index = index;
+                            return row;
+                        });
+                    },
+//            手动排序正序
+            handleSortByAsc:function (index) {
+                var key = this.currentColumns[index].key;
+                this.currentColumns.forEach(function (col) {
+                    col._sortType = 'normal';
+                });
+                this.currentColumns[index].sortType = 'asc';
+                this.currentData.sort(function (a,b) {
+                    return a[key] > b[key] ? 1 : -1;
+                });
+            },
+//            手动排序反序
+            handleSortByDesc:function (index) {
+                var key = this.currentColumns[index].key;
+                this.currentColumns.forEach(function (col) {
+                    col._sortType = 'normal';
+                });
+                this.currentColumns[index]._sortType = 'desc';
+                this.currentData.sort(function (a,b) {
+                    return a[key] < b[key] ? 1: -1;
+                })
+            }
+        },
+        mounted(){
+            // v-table初始化时调用
+            this.makeColumns();
+            this.makeData();
+        },
+//        render函数自带监听数据状态改变的特性
+//        Vue 推荐在绝大多数情况下使用 template 来创建你的 HTML。然而在一些场景中，你真的需要 JavaScript 的完全编程的能力，这就是 render 函数，它比 template 更接近编译器。
+//        https://cn.vuejs.org/v2/guide/render-function.html
+        render:function (h) {
+            var _this = this;
+            var ths = [];
+            this.currentColumns.forEach(function (col,index) {
+                if(col.sortable){
+                    ths.push(h('th',[h('span',col.title), h('a',{class:{on:col._sortType === 'asc'},on:{click:function () {_this.handleSortByAsc(index)}}},''), h('a',{class:{on:col._sortType === 'desc'},on:{click:function () {_this.handleSortByDesc(index)}}},'')]));
+                }else{
+                    ths.push(h('th',col.title));
+                }
+            });
+            var trs =[];
+            this.currentData.forEach(function (row) {
+                var tds = [];
+                _this.currentColumns.forEach(function (cell) {
+                        tds.push(h('td',row[cell.key]));
+                });
+                trs.push(h('tr',tds));
+            });
+            return h('table',[
+                h('thead',[h('tr',ths)]),h('tbody',trs)
+            ]);
+        },
+//        watch:{
+//            data:function () {
+//                this.makeData();
+//                var sortedColumn = this.currentColumns.filter(function (col) {
+//                   return col._sortType !== 'normal';
+//                });
+//                    if(sortedColumn.length > 0){
+//                        if(sortedColumn[0]._sortType === 'asc'){
+//                            this.handleSortByAsc(sortedColumn[0]._index);
+//                        }else {
+//                            this.handleSortByDesc(sortedColumn[0]._index);
+//                        }
+//                    }
+//            }
+//        }
+    });
+    var app = new Vue({
+        el:'#app',
+        data:function () {
+            return{
+                columns:[
+                    {
+                        title:'姓名',
+                        key:'name'
+                    },
+                    {
+                        title:'年龄',
+                        key:'age',
+                        sortable:true
+                    },
+                    {
+                        title:'出生日期',
+                        key:'birthday',
+                        sortable:true
+                    },
+                    {
+                        title:'地址',
+                        key:'address'
+                    }
+                ],
+                data:[
+                    { name:'司徒正美', age:26, birthday:'1999-02-21', address:'北京市朝阳区芍药居' },
+                    { name:'吕大豹', age:30, birthday:'1992-01-23', address:'北京市海淀区西二旗' },
+                    { name:'阮一峰', age:25, birthday:'1987-11-10', address:'上海市浦东新区世纪大道' },
+                    { name:'张鑫旭', age:18, birthday:'1991-10-10', address:'深圳市南山区深南大道' }
+                ]
+            }
+        }
+    })
+</script>
+</body>
+</html>

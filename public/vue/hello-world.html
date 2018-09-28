@@ -2,8 +2,8 @@
 
 <head>
     <title>Hello world!</title>
+    <link rel="icon" href="/images/logo.png" type="image/x-icon">
     <script src="/vue/js/vue.js">
-
 
     </script>
 </head>
@@ -35,6 +35,14 @@
     <div id="app-6">
         <p>{{ message }}</p>
         <input v-model="message">
+    </div>
+
+    <div id="app-7">
+        <ol>
+            <!-- Now we provide each todo-item with the todo object    -->
+            <!-- it's representing, so that its content can be dynamic -->
+            <todo-item v-for="item in groceryList" v-bind:todo="item"></todo-item>
+        </ol>
     </div>
 </body>
 <script>
@@ -84,6 +92,22 @@
         el: '#app-6',
         data: {
             message: 'Hello Vue!'
+        }
+    })
+    Vue.component('todo-item', {
+        props: ['todo'],
+        template: '<li>{{ todo.text }}</li>'
+    })
+    var app7 = new Vue({
+        el: '#app-7',
+        data: {
+            groceryList: [{
+                text: 'Vegetables'
+            }, {
+                text: 'Cheese'
+            }, {
+                text: 'Whatever else humans are supposed to eat'
+            }]
         }
     })
 

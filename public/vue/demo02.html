@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        ul {
+            list-style: none;
+        }
+
+        .red {
+            color: #E12525;
+        }
+
+        .bounce-enter-active {
+            animation: bounce-in .5s;
+        }
+
+        .bounce-leave-active {
+            animation: bounce-in .5s reverse;
+        }
+
+        @keyframes bounce-in {
+            0% {
+                transform: scale(0);
+            }
+            50% {
+                transform: scale(1.5);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .flip-list-move {
+            transition: transform 1s;
+        }
+
+        #staggered-list {
+            width: 1200px;
+            margin: 100px auto;
+        }
+    </style>
+    <script src="/vue/js/vue.js"></script>
+</head>
+
+<body>
+    <ul id="app">
+        <li v-for="item in items"> {{parentMsg}} <span :class="{red:color}">{{item.childMsg}}</span></li>
+    </ul>
+    <script type="text/javascript">
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                color: true,
+                parentMsg: 'BTC',
+                items: [{
+                        childMsg: 'ETH'
+                    },
+                    {
+                        childMsg: 'CFUN'
+                    },
+                    {
+                        childMsg: 'FBTC'
+                    }
+                ]
+            }
+        })
+    </script>
+
+    <div id="example">
+        <p>{{ message }}</p>
+        <p v-html="message2"></p>
+        <button :disabled="isButtonDisabled">Button</button>
+        <button v-on:click="onClick">点我</button>
+
+    </div>
+    <script type="text/javascript">
+        var example = new Vue({
+            el: '#example',
+            data: {
+                message: 'ETH',
+                message2: '<span class="red">ETH color is red</span>',
+                isButtonDisabled: true,
+                onClick: function() {
+                    example.isButtonDisabled = !example.isButtonDisabled;
+                }
+                // isButtonDisabled 的值是 null、undefined 或 false
+            }
+        })
+    </script>
+
+
+    <div id="example0">
+        <p>正序: "{{ message }}"</p>
+        <p>反序: "{{ reversedMessage }}"</p>
+    </div>
+    <hr>
+    <div id="example1">
+        <p>正序: "{{ message }}"</p>
+        <p>反序: "{{reversedMessage()}}"</p>
+    </div>
+    <script type="text/javascript">
+        var vm = new Vue({
+            el: '#example0',
+            data: {
+                message: 'ETH'
+            },
+            computed: {
+                // 计算属性的 getter
+                reversedMessage: function() {
+                    // `this` 指向 vm 实例
+                    return this.message.split('').reverse().join('').toLowerCase()
+                }
+            }
+        })
+        //不同的是计算属性是基于它们的依赖进行缓存的。计算属性只有在它的相关依赖发生改变时才会重新求值。这就意味着只要 message 还没有发生改变，多次访问 reversedMessage 计算属性会立即返回之前的计算结果，而不必再次执行函数。
+        var vm1 = new Vue({
+            el: '#example1',
+            data: {
+                message: 'ETH'
+            },
+            methods: {
+                reversedMessage: function() {
+                    return this.message.toLowerCase().split('').reverse().join('')
+                }
+            }
+        })
+    </script>
+
+    <div id="example2">
+        <button @click="show = !show">切换展示</button>
+        <transition name="bounce">
+            <p v-if="show">欢迎来到coinegg欢迎来到coinegg欢迎来到coinegg欢迎来到coinegg欢迎来到coinegg欢迎来到coinegg欢迎来到coinegg欢迎来到coinegg欢迎来到coinegg欢迎来到coinegg欢迎来到coinegg欢迎来到coinegg欢迎来到coinegg欢迎来到coinegg欢迎来到coinegg欢迎来到coinegg</p>
+        </transition>
+    </div>
+    <script type="text/javascript">
+        var vm = new Vue({
+            el: '#example2',
+            data: {
+                show: true
+            }
+        })
+    </script>
+
+    <script src="/vue/js/velocity.min.js"></script>
+
+    <div id="staggered-list">
+        <input v-model="query" @input="change">
+        <transition-group name="staggered-fade" tag="ul" :css="false">
+            <li v-for="(item, index) in list" :key="item.msg" :data-index="index" v-show="item.show">{{ item.msg }}</li>
+        </transition-group>
+    </div>
+    <script type="text/javascript">
+        var list = new Vue({
+            el: '#staggered-list',
+            data: {
+                query: '',
+                list: [{
+                        msg: 'ETH',
+                        show: true
+                    },
+                    {
+                        msg: 'BTC',
+                        show: true
+                    },
+                    {
+                        msg: 'BCD',
+                        show: true
+                    },
+                    {
+                        msg: 'CFUN',
+                        show: true
+                    },
+                    {
+                        msg: 'NEO',
+                        show: true
+                    }
+                ]
+            },vv
+            methods: {
+                change: function() {
+                    for (i in list.list) {
+                        let item = list.list[i];
+                        if (item.msg.toLowerCase().indexOf(list.query.toLowerCase()) == -1) {
+                            item.show = false;
+                        } else {
+                            item.show = true;
+                        }
+                    }
+                }
+            }
+        })
+    </script>
+
+</body>
+
+</html>

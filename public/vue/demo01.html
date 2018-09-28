@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        p {
+            background: yellow;
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+    <script src="/vue/js/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div v-pre>{{name}}
+            <i>{{t}}</i>
+        </div>
+        <div v-html="namet"></div>
+        <div v-text="namett"></div>
+    </div>
+    <script type="text/javascript">
+        var app = new Vue({
+            el: '#app',
+            data: {
+                name: 1000, sex: '男', m: "300.0001000",
+                namet: '<div>123123</div>', namett: ''
+            },
+        });
+    </script>
+
+    <div id="app1">
+        {{name*100}}-{{sex}}-{{m.split('.')[1]}}
+    </div>
+    <script type="text/javascript">
+        var app1 = new Vue({
+            el: '#app1',
+            data: {
+                name: 1000, sex: '男', m: "300.0001000"
+            },
+        });
+    </script>
+
+    <div id="app2" v-cloak>{{msg}}</div>
+    <script type="text/javascript">
+        setTimeout(() => {
+            new Vue({
+                el: "#app2",
+                data: {
+                    msg: "hello vue!"
+                }
+            })
+        }, 2000)
+    </script>
+
+    <div id="app-2">
+        <span v-bind:title="message">
+            鼠标悬停几秒钟查看此处动态绑定的提示信息！
+        </span>
+    </div>
+
+    <script>
+        var app_2 = new Vue({
+            el: '#app-2',
+            data: {
+                message: '页面加载于 ' + new Date().toLocaleString()
+            }
+        })
+    </script>
+
+    <div id="app-3">
+        <p v-if="seen">现在你看到我了</p>
+    </div>
+    <script>
+        var app3 = new Vue({
+            el: '#app-3',
+            data: {
+                seen: true
+            }
+        })
+
+
+    </script>
+    <div id="app-4">
+        <ol>
+            <li v-for="todo in todos">
+                {{ todo.text }}
+            </li>
+        </ol>
+    </div>
+
+    <script>
+        var app4 = new Vue({
+            el: '#app-4',
+            data: {
+                todos: [
+                    { text: '学习 JavaScript' },
+                    { text: '学习 Vue' },
+                    { text: '整个牛项目' }
+                ]
+            }
+        })
+
+    </script>
+
+    <div id="app5">
+        <button v-on:click="onClick">点我</button>
+        <button v-on='{mouseenter:[onEnter, onEnter1],mouseleave:onOut}' v-on:click="onClick">点我</button>
+    </div>
+    <script type="text/javascript">
+        var vm = new Vue({
+            el: '#app5',
+            data: {
+            }, methods: {
+                onClick: function () {
+                    console.log('我是点击事件')
+                }, onEnter: function () {
+                    console.log("mouseenter");
+                },
+                onEnter1: function () {
+                    console.log("mouseenter1");
+                },
+                onOut: function () {
+                    console.log("mouseout");
+                },
+            }
+
+        });
+    </script>
+
+    <div id="app6">
+        <p v-bind:title="title">html属性不能使用双大括号形式绑定，只能使用v-bind指令</p>
+        <div class="static" v-bind:class="{ active: isActive, 'text-danger': hasError }">111111111111
+        </div>
+        <a v-bind:href="url">百度</a>
+    </div>
+    <script type="text/javascript">
+        var vm = new Vue({
+            el: '#app6',
+            data: {
+                isActive: true,
+                hasError: true,
+                url: 'https://wwww.baidu.com',
+                title: '使用双大括号形式绑定'
+            }
+        });
+    </script>
+
+<div id="app7">
+    <li v-for="(item,index) in items">{{index}}-----{{item.text}}</li>
+    <li v-for="item in items">{{item.text}}</li>
+  </div>
+  <script type="text/javascript">
+      var vm= new Vue({
+          el:'#app7',
+          data:{
+              items:[
+                  {text:"第一组"},
+                  {text:"第二组"},
+                  {text:"第三组"},
+              ]
+          }
+      })
+  </script>
+</body>
+
+</html>
