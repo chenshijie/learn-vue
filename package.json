@@ -1,0 +1,29 @@
+{
+  "name": "learn-vue",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "cookie-parser": "^1.4.3",
+    "debug": "^4.0.1",
+    "express": "^4.16.3",
+    "jade": "^1.11.0",
+    "morgan": "^1.9.1",
+    "serve-favicon": "^2.5.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chenshijie/learn-vue.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chenshijie/learn-vue/issues"
+  },
+  "homepage": "https://github.com/chenshijie/learn-vue#readme"
+}
